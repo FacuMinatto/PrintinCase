@@ -23,6 +23,9 @@ public:
     Estado obtenerEstadoTemperatura() const;
     Estado obtenerEstadoHumedad() const;
 
+    void setLimitesTemperatura(float tMin, float tMax, float mTemp);
+    void setPerfilHumedad(int perfil);
+
 private:
     DHT dht;
     float temperatura;

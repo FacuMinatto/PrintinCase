@@ -11,6 +11,7 @@ public:
     void iniciar();
     void mostrar(Estado estado);
     void apagar();
+    void resetear();
 
 private:
     int pinRojo;

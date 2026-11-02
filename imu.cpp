@@ -173,6 +173,22 @@ Estado Imu::obtenerEstadoRotacion() const {
     return estadoRotacion;
 }
 
+void Imu::setCategoria(Categoria nuevaCat) {
+    categoria = nuevaCat;
+    estadoAceleracion = NORMAL;
+    estadoRotacion = NORMAL;
+    if (categoria == CAT_FRAGIL) {
+        limiteAceleracion = 1.5;
+        limiteRotacion = 90.0;
+    } else if (categoria == CAT_NORMAL) {
+        limiteAceleracion = 3.0;
+        limiteRotacion = 270.0;
+    } else {
+        limiteAceleracion = 0.0;
+        limiteRotacion = 0.0;
+    }
+}
+
 // =====================================================
 // CLASE SENSOR TILT SW-520D
 // =====================================================
@@ -218,4 +234,11 @@ void SensorTilt::actualizar() {
 
 bool SensorTilt::huboInclinacion() const {
     return inclinacionDetectada;
+}
+
+void SensorTilt::setSensibilidad(bool hab) {
+    activo = hab;
+    contadorVibracion = 0;
+    inicioVentana = 0;
+    inclinacionDetectada = false;
 }

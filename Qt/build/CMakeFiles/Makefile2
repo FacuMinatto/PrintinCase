@@ -84,8 +84,8 @@ clean: CMakeFiles/ConfiguradorTransporte_autogen.dir/clean
 # Target rules for target CMakeFiles/ConfiguradorTransporte.dir
 
 # All Build rule for target.
-CMakeFiles/ConfiguradorTransporte.dir/all: CMakeFiles/ConfiguradorTransporte_autogen_timestamp_deps.dir/all
 CMakeFiles/ConfiguradorTransporte.dir/all: CMakeFiles/ConfiguradorTransporte_autogen.dir/all
+CMakeFiles/ConfiguradorTransporte.dir/all: CMakeFiles/ConfiguradorTransporte_autogen_timestamp_deps.dir/all
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ConfiguradorTransporte.dir/build.make CMakeFiles/ConfiguradorTransporte.dir/depend
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/ConfiguradorTransporte.dir/build.make CMakeFiles/ConfiguradorTransporte.dir/build
 	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --progress-dir=/home/facum/Arduino/PristinCase/Qt/build/CMakeFiles --progress-num=1,2,3,4,5 "Built target ConfiguradorTransporte"

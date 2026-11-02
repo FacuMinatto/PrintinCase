@@ -32,6 +32,8 @@ public:
     float obtenerAceleracionDinamica() const { return aceleracionDinamica; }
     float obtenerRotacion() const { return rotacion; }
 
+    void setCategoria(Categoria nuevaCat);
+
 private:
     int dirI2C;
     Categoria categoria;
@@ -59,6 +61,7 @@ public:
     void iniciar();
     void actualizar();
     bool huboInclinacion() const;
+    void setSensibilidad(bool hab);
 
 private:
     int pin;

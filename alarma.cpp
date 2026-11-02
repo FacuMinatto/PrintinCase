@@ -14,6 +14,10 @@ void LedEstado::apagar() {
     analogWrite(pinVerde, 0);
 }
 
+void LedEstado::resetear() {
+    peorEstado = NORMAL;
+}
+
 void LedEstado::mostrar(Estado nuevoEstado) {
     if (nuevoEstado > peorEstado) {
         peorEstado = nuevoEstado;

@@ -16,8 +16,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     setMinimumSize(420, 480);
 
     puertoSerie = new QSerialPort(this);
-    puertoSerie->setPortName("/dev/ttyUSB0");
-    puertoSerie->setBaudRate(QSerialPort::Baud115200);
+    QString nombrePuerto = "/dev/ttyUSB0";
+    const auto puertos = QSerialPortInfo::availablePorts();
+    for (const QSerialPortInfo &info : puertos) {
+        if (info.portName().startsWith("ttyUSB") || info.portName().startsWith("ttyACM")) {
+            nombrePuerto = info.systemLocation();
+            break;
+        }
+    }
+    puertoSerie->setPortName(nombrePuerto);
+    puertoSerie->setBaudRate(QSerialPort::Baud9600);
     puertoSerie->setDataBits(QSerialPort::Data8);
     puertoSerie->setParity(QSerialPort::NoParity);
     puertoSerie->setStopBits(QSerialPort::OneStop);
@@ -27,9 +35,9 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
     connect(puertoSerie, &QSerialPort::readyRead, this, &MainWindow::leerDatosSerie);
 
     if (puertoSerie->open(QIODevice::ReadWrite)) {
-        qDebug() << "Puerto serie abierto correctamente.";
+        qDebug() << "Puerto serie abierto correctamente en" << nombrePuerto << "a 9600 baudios.";
     } else {
-        qDebug() << "Error: No se pudo abrir el puerto serie al iniciar.";
+        qDebug() << "Error: No se pudo abrir el puerto serie al iniciar:" << puertoSerie->errorString();
     }
 }
 
@@ -183,6 +191,8 @@ void MainWindow::leerDatosSerie() {
         QString linea = QString::fromUtf8(bufferSerie.left(posEnter)).trimmed();
         bufferSerie.remove(0, posEnter + 1);
 
+        qDebug() << ">> ARDUINO RESPONDE:" << linea;
+
         // Si la línea es un incidente de tu Arduino
         if (linea.startsWith("INCIDENTE;")) {
             // Quitamos la palabra "INCIDENTE;"
@@ -195,15 +205,31 @@ void MainWindow::leerDatosSerie() {
         else if (linea == "MEMORIA_BORRADA") {
             QMessageBox::information(this, "Arduino", "La memoria EEPROM ha sido borrada.");
         }
+        else if (linea == "OK_DATOS_RECIBIDOS") {
+            QMessageBox::information(this, "Confirmado", "Arduino recibió y aplicó los nuevos parámetros correctamente.");
+        }
     }
 }
 
 void MainWindow::solicitarHistorial() {
+    if (!puertoSerie->isOpen()) {
+        const auto puertos = QSerialPortInfo::availablePorts();
+        for (const QSerialPortInfo &info : puertos) {
+            if (info.portName().startsWith("ttyUSB") || info.portName().startsWith("ttyACM")) {
+                puertoSerie->setPortName(info.systemLocation());
+                break;
+            }
+        }
+        puertoSerie->open(QIODevice::ReadWrite);
+    }
+
     if (puertoSerie->isOpen()) {
-        // Le mandamos un comando al Arduino para que empiece a escupir los datos
+        txtHistorial->clear();
+        txtHistorial->setPlainText("FechaHora,Latitud,Longitud,Temperatura,Humedad,Aceleracion,Rotacion,Causa");
         puertoSerie->write("GET\n");
+        puertoSerie->flush();
     } else {
-        QMessageBox::warning(this, "Error", "Puerto serie cerrado.");
+        QMessageBox::warning(this, "Error", "Puerto serie cerrado o en uso por otro programa (cierre el Monitor Serial de Arduino IDE).");
     }
 }
 
@@ -263,9 +289,23 @@ void MainWindow::enviarDatos() {
                     QString::number(idAceleracion) + "," + QString::number(idHumedad) + "," +
                     QString::number(tMin) + "," + QString::number(tMax) + "," + QString::number(margen) + "\n";
 
+    if (!puertoSerie->isOpen()) {
+        const auto puertos = QSerialPortInfo::availablePorts();
+        for (const QSerialPortInfo &info : puertos) {
+            if (info.portName().startsWith("ttyUSB") || info.portName().startsWith("ttyACM")) {
+                puertoSerie->setPortName(info.systemLocation());
+                break;
+            }
+        }
+        puertoSerie->open(QIODevice::ReadWrite);
+    }
+
     if (puertoSerie->isOpen()) {
+        qDebug() << "<< QT ENVIA:" << trama.trimmed();
         puertoSerie->write(trama.toUtf8());
-        QMessageBox::information(this, "Enviado", "Parámetros cargados al dispositivo.");
+        puertoSerie->flush();
+    } else {
+        QMessageBox::warning(this, "Error", "No se pudo conectar al Arduino. Verifique el cable USB y cierre el Monitor Serial de Arduino IDE.");
     }
 }
 

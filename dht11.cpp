@@ -87,3 +87,21 @@ Estado Dht11::obtenerEstadoTemperatura() const {
 Estado Dht11::obtenerEstadoHumedad() const {
     return estadoHumedad;
 }
+
+void Dht11::setLimitesTemperatura(float tMin, float tMax, float mTemp) {
+    tempMin = tMin;
+    tempMax = tMax;
+    margenTemp = mTemp;
+    if (lecturaValida) {
+        evaluarEstados();
+    }
+}
+
+void Dht11::setPerfilHumedad(int perfil) {
+    if (perfil == 0) { humMin = 20.0; humMax = 50.0; }       // Seco
+    else if (perfil == 1) { humMin = 60.0; humMax = 80.0; }  // Húmedo
+    else { humMin = 20.0; humMax = 90.0; }                   // Indistinto
+    if (lecturaValida) {
+        evaluarEstados();
+    }
+}
