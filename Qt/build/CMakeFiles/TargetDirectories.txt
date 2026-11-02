@@ -1,0 +1,5 @@
+/home/facum/Arduino/PristinCase/Qt/build/CMakeFiles/ConfiguradorTransporte.dir
+/home/facum/Arduino/PristinCase/Qt/build/CMakeFiles/edit_cache.dir
+/home/facum/Arduino/PristinCase/Qt/build/CMakeFiles/rebuild_cache.dir
+/home/facum/Arduino/PristinCase/Qt/build/CMakeFiles/ConfiguradorTransporte_autogen_timestamp_deps.dir
+/home/facum/Arduino/PristinCase/Qt/build/CMakeFiles/ConfiguradorTransporte_autogen.dir

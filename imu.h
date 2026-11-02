@@ -52,4 +52,20 @@ private:
     void evaluarEstado(float valor, float limite, Estado &estadoActual, const char* parametro);
 };
 
+class SensorTilt {
+public:
+    SensorTilt(int pinSensor = 4, bool habilitado = true);
+
+    void iniciar();
+    void actualizar();
+    bool huboInclinacion() const;
+
+private:
+    int pin;
+    bool activo;
+    int contadorVibracion;
+    unsigned long inicioVentana;
+    bool inclinacionDetectada;
+};
+
 #endif

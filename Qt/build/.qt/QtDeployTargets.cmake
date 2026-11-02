@@ -1,0 +1,2 @@
+set(__QT_DEPLOY_TARGET_ConfiguradorTransporte_FILE /home/facum/Arduino/PristinCase/Qt/build/ConfiguradorTransporte)
+set(__QT_DEPLOY_TARGET_ConfiguradorTransporte_TYPE EXECUTABLE)

@@ -128,6 +128,22 @@ void loop() {
   }
 
 
+  if (Serial.available() > 0) {
+    String comando = Serial.readStringUntil('\n');
+    comando.trim();
+
+    if (comando == "GET") {
+        registro.enviarAQt();
+    } 
+    else if (comando == "CLEAR") {
+        registro.borrarMemoria();
+    }
+    else if (comando.startsWith("SET,")) {
+        // Acá parseas los parámetros que te envía Qt para configurar el sensor
+    }
+}
+
+
   /*                                //es para imprimir en el monitor serial
   if (Serial.available()) {         //o guardar sobre el qt
 

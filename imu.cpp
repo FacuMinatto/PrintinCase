@@ -172,3 +172,50 @@ Estado Imu::obtenerEstadoAceleracion() const {
 Estado Imu::obtenerEstadoRotacion() const {
     return estadoRotacion;
 }
+
+// =====================================================
+// CLASE SENSOR TILT SW-520D
+// =====================================================
+
+SensorTilt::SensorTilt(int pinSensor, bool habilitado)
+    : pin(pinSensor),
+      activo(habilitado),
+      contadorVibracion(0),
+      inicioVentana(0),
+      inclinacionDetectada(false) {
+}
+
+void SensorTilt::iniciar() {
+    if (activo) {
+        pinMode(pin, INPUT);
+    }
+}
+
+void SensorTilt::actualizar() {
+    if (!activo) {
+        return;
+    }
+
+    inclinacionDetectada = false;
+    int estadoTilt = digitalRead(pin);
+
+    if (estadoTilt == HIGH) {
+        if (inicioVentana == 0) {
+            inicioVentana = millis();
+        }
+        contadorVibracion++;
+    }
+
+    if (inicioVentana != 0 && (millis() - inicioVentana >= 500)) {
+        if (contadorVibracion >= 4) {
+            inclinacionDetectada = true;
+            Serial.println("ROTACION_SW520_DETECTADA");
+        }
+        contadorVibracion = 0;
+        inicioVentana = 0;
+    }
+}
+
+bool SensorTilt::huboInclinacion() const {
+    return inclinacionDetectada;
+}
